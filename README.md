@@ -17,3 +17,9 @@ Notes:
 - Include comprehensive documentation explaining the system architecture, database schema, and API endpoints.
 - Clearly specify all dependencies and include a setup guide for easy replication of the environment.
 - Provide a set of test cases to ensure the functionality of key features.
+
+
+
+# My notes
+
+Plan is to Install everything on in a docker container
