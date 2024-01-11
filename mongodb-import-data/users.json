@@ -1,0 +1,57 @@
+[
+    {
+        "name": "Osman Faruk",
+        "surname": "Kaya",
+        "username": "osmanfarukkaya",
+        "password": "123456",
+        "birthday": "06.02.2001",
+        "email": "osmanfaruk.kaya@university.edu",
+        "id_number": "12345678910",
+        "phone_number": "05555555555",
+        "user_type": "student"
+    },
+    {
+        "name": "Esra",
+        "surname": "Yilmaz",
+        "username": "esraylmz",
+        "password": "123456",
+        "birthday": "03.02.2001",
+        "email": "esra.yilmaz@email-provider.com",
+        "id_number": "12345678911",
+        "phone_number": "05555555556",
+        "user_type": "student"
+    },
+    {
+        "name": "Megatron",
+        "surname": "Griffin",
+        "username": "meg",
+        "password": "birdistheword",
+        "birthday": "02.01.2001",
+        "email": "megatron.griffin@gmail.com",
+        "id_number": "12345678912",
+        "phone_number": "05555555557",
+        "user_type": "student"
+    },
+    {
+        "name": "Mehmet",
+        "surname": "Yilmaz",
+        "username": "mehmetyilmaz",
+        "password": "123456",
+        "birthday": "07.04.1941",
+        "email": "mehmet.yilmaz@hotmail.com",
+        "id_number": "12345678913",
+        "phone_number": "05555555558",
+        "user_type": "faculty"
+    },
+    {
+        "name": "Ahmet",
+        "surname": "Yilmaz",
+        "username": "ahmetyilmaz",
+        "password": "123456",
+        "birthday": "07.04.1941",
+        "email": "ahmet@email.com",
+        "id_number": "12345678914",
+        "phone_number": "05555555559",
+        "user_type": "faculty"
+    }
+]
