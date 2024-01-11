@@ -1,0 +1,17 @@
+[
+    {
+      "isbn": "0596159900",
+      "title": "Head First HTML and CSS",
+      "year": 2012,
+      "price": 26.78,
+      "page": 768,
+      "category": "IT",
+      "coverPhoto": "images/head.first.html.and.css.png",
+      "publisher": { "id": 1, "name": "O'Reilly" },
+      "author": {
+        "identityNo": "5",
+        "firstName": "Stoyan",
+        "lastName": "Stefanov"
+      }
+    }
+]

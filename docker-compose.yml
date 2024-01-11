@@ -1,0 +1,68 @@
+version: "3"
+
+
+services:
+  mongodb-database:
+    image: mongo:latest
+    container_name: mongodb-database
+    restart: always
+    ports:
+      - 27017:27017
+    # command: mongod --port 27017 --logpath=/var/log/mongodb.log
+
+  mongodb-import-data:
+    build: ./mongodb-import-data
+    container_name: mongodb-import-data
+    restart: no
+    depends_on:
+      - mongodb-database
+
+
+  flask-app:
+    build: ./flask-app
+    container_name: flask-app
+    restart: always
+    ports:
+      - 8000:5000
+
+    depends_on:
+      - mongodb-database
+    environment:
+      MONGO_URI: mongodb://mongodb-database:27017
+    volumes:
+      - ./flask-app:/app
+
+
+  kafka-broker:
+    image: bitnami/kafka:latest
+    container_name: kafka-broker
+    restart: always
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:29092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_CFG_DELETE_TOPIC_ENABLE: 'true'
+      KAFKA_CFG_LOG_RETENTION_HOURS: '1'
+      KAFKA_CFG_LOG_RETENTION_BYTES: '1000000'
+      KAFKA_CFG_NUM_PARTITIONS: '1'
+      KAFKA_CFG_DEFAULT_REPLICATION_FACTOR: '1'
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: '1'
+      KAFKA_CFG_GROUP_INITIAL_REBALANCE_DELAY_MS: '0'
+    depends_on:
+      - zookeeper
+
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    ports:
+      - 2181:2181
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    
