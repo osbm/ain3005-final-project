@@ -1,0 +1,2 @@
+mongoimport --host mongodb-database --db las --collection books --file books.json --jsonArray --type json
+mongoimport --host mongodb-database --db las --collection users --file users.json --jsonArray --type json

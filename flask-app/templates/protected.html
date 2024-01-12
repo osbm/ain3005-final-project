@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected</title>
+</head>
+<body>
+    This is a protected page. You can only see this if you are logged in.
+    To log out, click <a href="/logout">here</a>.
+
+    {% if user.user_type == 'student' %}
+        <p>Student</p>
+    {% elif user.user_type == 'teacher' %}
+        <p>Teacher</p>
+    {% endif %}
+
+    To delete your account, click <a href="/delete">here</a>.
+</body>
+</html>

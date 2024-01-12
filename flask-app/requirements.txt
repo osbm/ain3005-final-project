@@ -1,2 +1,6 @@
 flask
 pymongo
+pyjwt
+flask-login
+flask-restful
+flask-jwt-extended
