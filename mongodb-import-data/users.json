@@ -1,12 +1,24 @@
 [
     {
+        "name": "admin",
+        "surname": "admin",
+        "username": "admin",
+        "password": "admin",
+        "birthday": "01.01.2001",
+        "email": "admin@admin.com",
+        "user_type": "admin",
+        "current_balance": 100000
+    },
+    {
         "name": "Osman Faruk",
         "surname": "Kaya",
         "username": "osmanfarukkaya",
         "password": "123456",
         "birthday": "06.02.2001",
         "email": "osmanfaruk.kaya@university.edu",
-        "user_type": "student"
+        "user_type": "student",
+        "current_balance": 100
+
     },
     {
         "name": "Esra",
@@ -15,7 +27,8 @@
         "password": "123456",
         "birthday": "03.02.2001",
         "email": "esra.yilmaz@email-provider.com",
-        "user_type": "student"
+        "user_type": "student",
+        "current_balance": -100
     },
     {
         "name": "Megatron",
@@ -24,7 +37,8 @@
         "password": "birdistheword",
         "birthday": "02.01.2001",
         "email": "megatron.griffin@gmail.com",
-        "user_type": "student"
+        "user_type": "student",
+        "current_balance": -200000
     },
     {
         "name": "Mehmet",
@@ -33,7 +47,8 @@
         "password": "123456",
         "birthday": "07.04.1941",
         "email": "mehmet.yilmaz@hotmail.com",
-        "user_type": "faculty"
+        "user_type": "faculty",
+        "current_balance": 22
     },
     {
         "name": "Ahmet",
@@ -42,6 +57,7 @@
         "password": "123456",
         "birthday": "07.04.1941",
         "email": "ahmet@email.com",
-        "user_type": "faculty"
+        "user_type": "faculty",
+        "current_balance": 0
     }
 ]

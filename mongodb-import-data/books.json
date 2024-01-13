@@ -7,12 +7,12 @@
     "page": 768,
     "category": "IT",
     "coverPhoto": "images/head.first.html.and.css.png",
-    "publisher": { "id": 1, "name": "O'Reilly" },
-    "author": {
-      "identityNo": "5",
-      "firstName": "Stoyan",
-      "lastName": "Stefanov"
-    }
+    "publisher": "O'Reilly",
+    "author": "Elisabeth Robson, Eric Freeman",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "978-1449369279",
@@ -22,12 +22,12 @@
     "page": 144,
     "category": "IT",
     "coverPhoto": "images/websocket.jpg",
-    "publisher": { "id": 1, "name": "O'Reilly" },
-    "author": {
-      "identityNo": "1",
-      "firstName": "Andrew",
-      "lastName": "Lombardi"
-    }
+    "publisher": "O'Reilly",
+    "author": "Andrew Lombardi",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "1783987987",
@@ -37,8 +37,12 @@
     "page": 290,
     "category": "IT",
     "coverPhoto": "images/mastering.javascript.design.patterns.jpg",
-    "publisher": { "id": 4, "name": "Packt" },
-    "author": { "identityNo": "8", "firstName": "Simon", "lastName": "Timms" }
+    "publisher": "Packt",
+    "author": "Simon Timms",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "1449325947",
@@ -48,12 +52,12 @@
     "page": 650,
     "category": "IT",
     "coverPhoto": "images/css3.missing.manual.png",
-    "publisher": { "id": 1, "name": "O'Reilly" },
-    "author": {
-      "identityNo": "6",
-      "firstName": "Stoyan",
-      "lastName": "Stefanov"
-    }
+    "publisher": "O'Reilly",
+    "author": "Stoyan Stefanov",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "0596806752",
@@ -63,12 +67,12 @@
     "page": 236,
     "category": "IT",
     "coverPhoto": "images/javascript.patterns.jpg",
-    "publisher": { "id": 1, "name": "O'Reilly" },
-    "author": {
-      "identityNo": "4",
-      "firstName": "Stoyan",
-      "lastName": "Stefanov"
-    }
+    "publisher": "O'Reilly",
+    "author": "Stoyan Stefanov",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "978-0441172719",
@@ -78,8 +82,12 @@
     "page": 896,
     "category": "Science Fiction",
     "coverPhoto": "images/dune.jpg",
-    "publisher": { "id": 2, "name": "Ace" },
-    "author": { "identityNo": "2", "firstName": "Frank", "lastName": "Herbert" }
+    "publisher": "Ace",
+    "author": "Frank Herbert",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "1430263881",
@@ -89,12 +97,13 @@
     "page": 1044,
     "category": "IT",
     "coverPhoto": "images/pro.jquery.2.png",
-    "publisher": { "id": 1, "name": "O'Reilly" },
-    "author": {
-      "identityNo": "7",
-      "firstName": "Stoyan",
-      "lastName": "Stefanov"
-    }
+    "publisher": "O'Reilly",
+    "author": "Adam Freeman",
+
+    "status": "reserved",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
+
   },
   {
     "isbn": "978-1617291999",
@@ -104,12 +113,12 @@
     "page": 424,
     "category": "IT",
     "coverPhoto": "images/java-8-in-action.jpg",
-    "publisher": { "id": 3, "name": "Manning Publication" },
-    "author": {
-      "identityNo": "3",
-      "firstName": "Andrew",
-      "lastName": "Lombardi"
-    }
+    "publisher": "Manning",
+    "author": "Raoul-Gabriel Urma",
+
+    "status": "in_shelf",
+    "current_occupant_username": "none",
+    "last_update_date": "2017-01-01"
   },
   {
     "isbn": "978-0345391803",
@@ -119,7 +128,11 @@
     "page": 224,
     "category": "Science Fiction",
     "coverPhoto": "images/the.hitchhikers.guide.to.the.galaxy.jpg",
-    "publisher": { "id": 5, "name": "Del Rey" },
-    "author": { "identityNo": "9", "firstName": "Douglas", "lastName": "Adams" }
+    "publisher": "Del Rey",
+    "author": "Douglas Adams",
+
+    "status": "borrowed",
+    "current_occupant_username": "user1",
+    "last_update_date": "2017-01-01"
   }
 ]

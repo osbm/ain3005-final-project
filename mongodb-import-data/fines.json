@@ -1,0 +1,9 @@
+[
+    {
+        "fine_date": "2019-01-01",
+        "username": "meg",
+        "fine_amount": 100,
+        "paid": false,
+        "book_isbn": "1234567890"
+    }
+]

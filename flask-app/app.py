@@ -4,7 +4,7 @@ import os
 import flask
 from flask import jsonify, render_template, request, redirect, url_for, flash
 
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, login_required, current_user
 # from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 
@@ -20,133 +20,78 @@ app.config["SECRET_KEY"] = "mysecret"
 jwt = JWTManager(app)
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'GET':
-        return render_template('index.html')
-    else:
-        # get username and password from the request
-        username = request.form['username']
-        password = request.form['password']
-    
-        # check if the username and password are correct
-        # check if username exists in database
-        user = database.users.find_one({'username': username})
-        if not user:
-            return render_template('index.html', error='Username not found')
-    
-        # check if password is correct
-        if password != user['password']:
-            return render_template('index.html', error='Incorrect password')
-    
-        # create the access token
-        access_token = create_access_token(identity=username)
-        return redirect(url_for('protected', access_token=access_token))
+class User(UserMixin):
+    def __init__(self, username=None, password=None, user_type=None, birthdate=None, email=None, name=None, surname=None, current_balance=None, active=True, id=None, **kwargs):
+        self.id = username
+
+        self.name = name
+        self.surname = surname
+        self.email = email
+        self.birthdate = birthdate
+        self.user_type = user_type
+        self.current_balance = current_balance
+
+        self.username = username
+        self.password = password
+        self.active = active
 
 
-# login with JWT
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return self.active
+
+    
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = database.users.find_one({"username": user_id})
+    if not user:
+        return None
+    return User(**user)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-
-    # get username and password from the request
-    username = request.form['username']
-    password = request.form['password']
-
-    # check if the username and password are correct
-    # check if username exists in database
-    user = database.users.find_one({'username': username})
-    if not user:
-        return render_template('login.html', error='Username not found')
-
-    # check if password is correct
-    if password != user['password']:
-        return render_template('login.html', error='Incorrect password')
-
-    # create the access token
-    access_token = create_access_token(identity=username)
-    return redirect(url_for('protected', access_token=access_token))
+    if request.method == 'POST':
+        user = database.users.find_one({"username": request.form['username']})
+        if user and request.form['password'] == user['password']:
+            user_obj = User(**user)
+            login_user(user_obj)
+            return redirect(url_for('protected'))
+        return render_template('login.html', error='Invalid username or password')
+    return render_template('login.html')
 
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'GET':
-        return render_template('signup.html')
-    
-    # get username and password from the request
-    name = request.form['name']
-    surname = request.form['surname']
-    username = request.form['username']
-    password = request.form['password']
-    user_type = request.form['user_type']
-    birthday = request.form['birthday']
-    email = request.form['email']
-    
-    # check if the username, or email already exists in database
-    user = database.users.find_one({'username': username})
-    # if user:
-    #     return render_template('signup.html', form=request.form, error='Username already exists')
-    # user = database.users.find_one({'email': email})
-    # if user:
-    #     return render_template('signup.html', error='Email already exists')
-    
-    # create the new user
-    database.users.insert_one(
-        {
-            'name': name,
-            'surname': surname,
-            'username': username,
-            'password': password,
-            'user_type': user_type,
-            'birthday': birthday,
-            'email': email
-        }
-    )
-    
-    # create the access token
-    access_token = create_access_token(identity=username)
-    return redirect(url_for('protected', access_token=access_token))
-    
-@app.route('/protected', methods=['GET'])
-@jwt_required
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return render_template('protected.html', user=current_user)
-    
-
-
-@app.route('/logout', methods=['GET'])
+@app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
 
 
-# delete account
-@app.route('/delete', methods=['GET', 'POST'])
-# @jwt_required
-def delete():
-    if request.method == 'GET':
-        return render_template('delete.html')
-    
-    # get username and password from the request
-    username = request.form['username']
-    password = request.form['password']
-    
-    # check if the username and password are correct
-    # check if username exists in database
-    user = database.users.find_one({'username': username})
-    if not user:
-        return render_template('delete.html', error='Username not found')
-    
-    # check if password is correct
-    if password != user['password']:
-        return render_template('delete.html', error='Incorrect password')
-    
-    # delete the user
-    database.users.delete_one({'username': username})
-    return redirect(url_for('logout'))
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        user = database.users.find_one({"username": request.form['username']})
+        if user:
+            return render_template('signup.html', error='Username already exists')
+        database.users.insert_one({"username": request.form['username'], "password": request.form['password']})
+        return redirect(url_for('login'))
+    return render_template('signup.html')
+
+
+@app.route('/protected', methods=['GET'])
+@login_required
+def protected():
+    return render_template('protected.html', user=current_user)
+
+@app.route('/')
+def index():
+    return render_template('index.html', user=current_user)
 
 if __name__ == '__main__':
+    login_manager.init_app(app)
     app.run(host="0.0.0.0", port=5000, debug=True)
