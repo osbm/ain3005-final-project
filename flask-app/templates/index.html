@@ -7,9 +7,40 @@
 </head>
 <body>
     
-    hey login here <a href="{{ url_for('login') }}">login</a>
+    <h1>THE library system</h1>
 
-    <!-- if logged in -->
+    Note: This is a demo application. You can do whatever you want with it. All the data will reset after you restart the docker compose.
+
+
+    <p>You can do following things without logging in:</p>
+    <ul>
+        <li>Search the library for books and users</li>
+        <li>Donate a book to our collection</li>
+
+    </ul>
+
+    <p>After logging in you can also:</p>
+    <ul>
+        <li>Borrow books</li>
+        <li>Return books</li>
+        <li>Reserve books</li>
+        <li>Cancel reservations</li>
+        <li>Buy books</li>
+        <li>Donate books</li>
+        <li>See your own profile</li>
+        <li>See your own history</li>
+        <li>Delete your account</li>
+    </ul>
+
+    <p>After logging in as an admin you can also:</p>
+
+    <ul>
+        <li>See all other user statistics</li>
+        <li>Delete/edit users books fines reservations</li>
+        <li>See all books</li>
+    </ul>
+
+    
     
     {% if user.is_authenticated %}
         <p>Logged in as {{ user.username }}.</p>
