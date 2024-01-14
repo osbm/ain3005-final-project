@@ -48,7 +48,10 @@
                     </tr>
                 {% endfor %}
         {% else %}
-            <h3>No results found for "{{ query }}"</h3>
+            {% if query %}
+                <h3>No results found for "{{ query }}"</h3>
+            {% endif %}
+
         {% endif %}
     </div>
     

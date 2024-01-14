@@ -7,8 +7,22 @@ from flask import jsonify, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, login_required, current_user
 # from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
-# from json import dumps, loads
+from json import dumps, loads
 import datetime
+
+from kafka import KafkaProducer
+
+# we are using kafka to send messages to the kafka cluster
+# then we have a consumer that consumes messages from the kafka cluster
+
+
+kafka_producer = KafkaProducer(
+    bootstrap_servers=['kafka-broker:9092'],
+    client_id='flask-app',
+    value_serializer=lambda x: dumps(x).encode('utf-8'),
+)
+
+kafka_producer.send('flask-app', {'type': 'app-started'})
 
 mongo_uri = os.environ.get('MONGO_URI')
 mongo_client = MongoClient(mongo_uri)
@@ -61,7 +75,9 @@ def login():
         if user and request.form['password'] == user['password']:
             user_obj = User(**user)
             login_user(user_obj)
+            kafka_producer.send('flask-app', {'type': 'login', 'username': user['username']})
             return redirect(url_for('profile'))
+        kafka_producer.send('flask-app', {'type': 'login-failed', 'username': request.form['username'], 'password': request.form['password']})
         return render_template('login.html', error='Invalid username or password')
     return render_template('login.html')
 
@@ -69,6 +85,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    kafka_producer.send('flask-app', {'type': 'logout', 'username': current_user.username})
     logout_user()
     return redirect(url_for('index'))
 
@@ -89,6 +106,7 @@ def signup():
             "username": request.form['username'],
             "password": request.form['password'],
         })
+        kafka_producer.send('flask-app', {'type': 'signup', 'username': request.form['username'], 'user_type': request.form['user_type']})
         return redirect(url_for('login'))
     return render_template('signup.html')
 
@@ -134,6 +152,7 @@ def deposit_money():
     if request.method == 'POST':
         amount = int(request.form['amount'])
         database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": amount}})
+        kafka_producer.send('flask-app', {'type': 'deposit-money', 'username': current_user.username, 'amount': amount})
         return redirect(url_for('profile'))
     return render_template('deposit_money.html', user=current_user)
 
@@ -150,7 +169,7 @@ def withdraw_money():
         if amount > current_user.current_balance:
             return render_template('withdraw_money.html', user=current_user, error='Not enough money')
 
-        
+        kafka_producer.send('flask-app', {'type': 'withdraw-money', 'username': current_user.username, 'amount': amount})
         database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": -amount}})
         return redirect(url_for('profile'))
     return render_template('withdraw_money.html', user=current_user)
@@ -191,6 +210,7 @@ def cancel_reservation(isbn):
     if datetime_delta.days < 0:
         database.fines.insert_one({"username": current_user.username, "amount": -datetime_delta.days * 10})
 
+    kafka_producer.send('flask-app', {'type': 'cancel-reservation', 'username': current_user.username, 'isbn': isbn})
     database.books.update_one({"isbn": isbn}, {"$set": {"status": "in_shelf", "current_occupant_username": None}})
     return redirect(url_for('profile'))
 
@@ -206,6 +226,7 @@ def reserve_book(isbn):
         flash('You can only reserve 3 books at a time')
         return redirect(url_for('books'))
 
+    kafka_producer.send('flask-app', {'type': 'reserve-book', 'username': current_user.username, 'isbn': isbn})
     database.books.update_one({"isbn": isbn}, {"$set": {"status": "reserved", "current_occupant_username": current_user.username}})
     return redirect(url_for('profile'))
 
@@ -219,6 +240,7 @@ def loan_book(isbn):
         flash('You can only loan 3 books at a time')
         return redirect(url_for('profile'))
 
+    kafka_producer.send('flask-app', {'type': 'loan-book', 'username': current_user.username, 'isbn': isbn})
     database.books.update_one({"isbn": isbn}, {"$set": {"status": "loaned", "current_occupant_username": current_user.username}})
     return redirect(url_for('profile'))
 
@@ -230,6 +252,8 @@ def return_book(isbn):
         return render_template('404.html', user=current_user)
     if book['status'] != 'loaned':
         return render_template('404.html', user=current_user)
+    
+    kafka_producer.send('flask-app', {'type': 'return-book', 'username': current_user.username, 'isbn': isbn})
     database.books.update_one({"isbn": isbn}, {"$set": {"status": "in_shelf", "current_occupant_username": None}})
     return redirect(url_for('profile'))
 
@@ -246,6 +270,8 @@ def pay_fine(fine_id):
     # delete fine
     database.fines.delete_one({"fine_id": fine_id})
     # deduct money from user
+
+    kafka_producer.send('flask-app', {'type': 'pay-fine', 'username': current_user.username, 'fine_id': fine_id})
     database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": -fine['fine_amount']}})
 
     return redirect(url_for('profile'))
@@ -259,9 +285,12 @@ def books():
 # 404 page
 @app.errorhandler(404)
 def page_not_found(e):
+    kafka_producer.send('flask-app', {'type': '404', 'username': current_user.username, 'url': request.url})
     return render_template('404.html', user=current_user), 404
+
 
 
 if __name__ == '__main__':
     login_manager.init_app(app)
     app.run(host="0.0.0.0", port=5000, debug=True)
+    

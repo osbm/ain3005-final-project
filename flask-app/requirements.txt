@@ -4,3 +4,4 @@ pyjwt
 flask-login
 flask-restful
 flask-jwt-extended
+kafka-python
