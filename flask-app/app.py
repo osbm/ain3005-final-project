@@ -104,7 +104,7 @@ def profile():
         user=current_user,
         my_books=list(my_books),
         my_reservations=list(my_reservations),
-        my_fines=list(my_fines)
+        my_fines=list(my_fines),
     )
 
 @app.route('/')
@@ -191,17 +191,21 @@ def cancel_reservation(isbn):
     if datetime_delta.days < 0:
         database.fines.insert_one({"username": current_user.username, "amount": -datetime_delta.days * 10})
 
-    database.books.update_one({"isbn": isbn}, {"$set": {"status": "available", "current_occupant_username": None}})
+    database.books.update_one({"isbn": isbn}, {"$set": {"status": "in_shelf", "current_occupant_username": None}})
     return redirect(url_for('profile'))
 
 @app.route('/book/<isbn>/reserve', methods=['GET'])
 @login_required
 def reserve_book(isbn):
     book = database.books.find_one({"isbn": isbn})
-    if not book:
-        return render_template('404.html', user=current_user)
-    if book['status'] != 'available':
-        return render_template('404.html', user=current_user)
+    if book['status'] != 'in_shelf':
+        return redirect(url_for('books', error='Book is not in shelf'))
+
+    currently_reserved_books = database.books.find({"current_occupant_username": current_user.username, "status": "reserved"})
+    if len(list(currently_reserved_books)) >= 3:
+        flash('You can only reserve 3 books at a time')
+        return redirect(url_for('books'))
+
     database.books.update_one({"isbn": isbn}, {"$set": {"status": "reserved", "current_occupant_username": current_user.username}})
     return redirect(url_for('profile'))
 
@@ -209,10 +213,12 @@ def reserve_book(isbn):
 @login_required
 def loan_book(isbn):
     book = database.books.find_one({"isbn": isbn})
-    if not book:
-        return render_template('404.html', user=current_user)
-    if book['status'] != 'reserved':
-        return render_template('404.html', user=current_user)
+    
+    currently_loaned_books = database.books.find({"current_occupant_username": current_user.username, "status": "loaned"})
+    if len(list(currently_loaned_books)) >= 3:
+        flash('You can only loan 3 books at a time')
+        return redirect(url_for('profile'))
+
     database.books.update_one({"isbn": isbn}, {"$set": {"status": "loaned", "current_occupant_username": current_user.username}})
     return redirect(url_for('profile'))
 
@@ -224,7 +230,7 @@ def return_book(isbn):
         return render_template('404.html', user=current_user)
     if book['status'] != 'loaned':
         return render_template('404.html', user=current_user)
-    database.books.update_one({"isbn": isbn}, {"$set": {"status": "available", "current_occupant_username": None}})
+    database.books.update_one({"isbn": isbn}, {"$set": {"status": "in_shelf", "current_occupant_username": None}})
     return redirect(url_for('profile'))
 
 @app.route('/fine/<int:fine_id>/pay', methods=['GET'])
@@ -243,6 +249,11 @@ def pay_fine(fine_id):
     database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": -fine['fine_amount']}})
 
     return redirect(url_for('profile'))
+
+@app.route('/books', methods=['GET'])
+def books():
+    books = database.books.find()
+    return render_template('books.html', user=current_user, books=list(books))
 
 
 # 404 page

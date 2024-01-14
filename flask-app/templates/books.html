@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        <a href="/search" class="active" style="float: left;">Search</a>
+        {% if user.is_authenticated %}
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Sign up</a>
+        {% endif %}
+    </div>
+
+    <div class="page-content">
+        <h2>All books</h2>
+
+        <table>
+            <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Year</th>
+                <th>Category</th>
+                <th>Book status</th>
+                <th>Occupied by </th>
+                <th>Reserve</th>
+            </tr>
+            {% for book in books %}
+                <tr>
+                    <td><a href="/book/{{ book.isbn }}">{{ book.isbn }}</a></td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.year }}</td>
+                    <td>{{ book.category }}</td>
+                    {% if book.status == "in_shelf" %}
+                        <td><span style="color: green;">{{ book.status }}</span></td>
+                        <td>-</td>
+                        <td><a href="/book/{{ book.isbn }}/reserve">Reserve</a></td>
+                    {% else %}
+                        <td><span style="color: red;">{{ book.status }}</span></td>
+                        <td>{{ book.current_occupant_username }}</td>
+                        <td>-</td>
+                    {% endif %}
+                    
+                    
+
+                </tr>
+            {% endfor %}
+    </div>
+    
+</body>
+</html>
