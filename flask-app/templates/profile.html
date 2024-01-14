@@ -10,6 +10,7 @@
 <body>
     <div class="navbar">
         <a href="/" style="float: left;">Home</a>
+        <a href="/search" style="float: left;">Search</a>
         <a href="/profile" class="active">Profile</a>
         <a href="/logout">Logout</a>
     </div>
@@ -33,13 +34,15 @@
                     <th>Start date</th>
                     <th>End date</th>
                     <th>Cancel</th>
+                    <th>Loan</th>
                 </tr>
                 {% for reservation in my_reservations %}
                     <tr>
                         <td><a href="/book/{{ reservation.isbn }}">{{ reservation.title }}</a></td>
                         <td>{{ reservation.last_update_date }}</td>
                         <td>{{ reservation.deadline }}</td>
-                        <td><a href="/reservation/cancel/{{ reservation.id }}">Cancel</a></td>
+                        <td><a href="/reservation/{{ reservation.isbn }}/cancel">Cancel</a></td>
+                        <td><a href="/book/{{ reservation.isbn }}/loan">Loan</a></td>
                     </tr>
                 {% endfor %}
             </table>
@@ -71,8 +74,6 @@
             <p>You have no books.</p>
         {% endif %}
 
-        <br>
-
         <h2>My fines</h2>
         {% if my_fines|length > 0 %}
             <table>
@@ -93,6 +94,16 @@
             </table>
         {% else %}
             <p>You have no fines.</p>
+        {% endif %}
+
+        {% if message %}
+            <p name="message">{{ message }}</p>
+        {% endif %}
+    
+        <br>
+
+        {% if error %}
+            <p name="error">{{ error }}</p>
         {% endif %}
 
         To delete your account, click <a href="/delete">here</a>.

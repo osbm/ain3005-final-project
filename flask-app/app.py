@@ -8,10 +8,15 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 # from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 # from json import dumps, loads
+import datetime
 
 mongo_uri = os.environ.get('MONGO_URI')
 mongo_client = MongoClient(mongo_uri)
 database = mongo_client.las
+
+database.users.create_index([("name", "text")])
+database.books.create_index([("title", "text")])
+
 
 
 login_manager = LoginManager()
@@ -74,7 +79,16 @@ def signup():
         user = database.users.find_one({"username": request.form['username']})
         if user:
             return render_template('signup.html', error='Username already exists')
-        database.users.insert_one({"username": request.form['username'], "password": request.form['password']})
+        database.users.insert_one({
+            "name": request.form['name'],
+            "surname": request.form['surname'],
+            "email": request.form['email'],
+            "birthdate": request.form['birthdate'],
+            "user_type": request.form['user_type'],
+            "current_balance": 0,
+            "username": request.form['username'],
+            "password": request.form['password'],
+        })
         return redirect(url_for('login'))
     return render_template('signup.html')
 
@@ -82,13 +96,9 @@ def signup():
 @app.route('/profile', methods=['GET'])
 @login_required
 def profile():
-
     my_books = database.books.find({"current_occupant_username": current_user.username, "status": "loaned"})
     my_reservations = database.books.find({"current_occupant_username": current_user.username, "status": "reserved"})
     my_fines = database.fines.find({"username": current_user.username})
-    # total_fine = 0
-    # for fine in my_fines:
-        # total_fine += fine['amount']
     return render_template(
         'profile.html',
         user=current_user,
@@ -105,14 +115,17 @@ def index():
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
-        
-        # log from keys 
-        app.logger.info(request.form.keys())
-        
-        query = request.form['query']
-        results = database.users.find({"$text": {"$search": query}})
-        return render_template('search.html', search_results=results)
-    return render_template('search.html')
+        query = request.form['search']
+        user_results = database.users.find({"$text": {"$search": query}})
+        book_results = database.books.find({"$text": {"$search": query}})
+        user_results = list(user_results)
+        book_results = list(book_results)
+
+        user_results = list(map(lambda x: {**x, "type": "user"}, user_results))
+        book_results = list(map(lambda x: {**x, "type": "book"}, book_results))
+        results = user_results + book_results
+        return render_template('search.html', user=current_user, search_results=results, query=query)
+    return render_template('search.html', user=current_user)
 
 
 @app.route('/deposit_money', methods=['GET', 'POST'])
@@ -162,9 +175,13 @@ def book(isbn):
 def cancel_reservation(isbn):
     book = database.books.find_one({"isbn": isbn})
     if not book:
-        return render_template('404.html', user=current_user)
+        return render_template('profile.html', user=current_user, error='Book not found')
     if book['status'] != 'reserved':
-        return render_template('404.html', user=current_user)
+        app.logger.info(book['status'])
+        return render_template('profile.html', user=current_user, error='Book is not reserved')
+
+    if book['current_occupant_username'] != current_user.username:
+        return render_template('profile.html', user=current_user, error='You are not the current occupant of this book')
 
     reservation_deadline = book['deadline'] # example value: "2023-03-23"
     reservation_deadline = datetime.datetime.strptime(reservation_deadline, '%Y-%m-%d') # convert to datetime object
