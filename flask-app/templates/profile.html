@@ -24,14 +24,6 @@
         <p>To deposit money into this account: <a href="/deposit_money">click here</a>.</p>
         <p>To withdraw money from this account: <a href="/withdraw_money">click here</a>.</p>
     
-        {% if user.user_type == 'student' %}
-            <p>Student</p>
-        {% elif user.user_type == 'teacher' %}
-            <p>Teacher</p>
-        {% elif user.user_type == 'admin' %}
-            <p>Admin</p>
-        {% endif %}
-    
     
         <h2>My reservations</h2>
         {% if my_reservations %}
@@ -70,8 +62,7 @@
                         <td><a href="/book/{{ book.isbn }}">{{ book.title }}</a></td>
                         <td>{{ book.author }}</td>
                         <td>{{ book.isbn }}</td>
-                        <td><a href="/return/{{ book.id }}">Return</a></td>
-
+                        <td><a href="/book/{{ book.isbn }}/return">Return</a></td>
                         </td>
                     </tr>
                 {% endfor %}
@@ -83,7 +74,7 @@
         <br>
 
         <h2>My fines</h2>
-        {% if my_fines %}
+        {% if my_fines|length > 0 %}
             <table>
                 <tr>
                     <th>Fine date</th>
@@ -96,7 +87,7 @@
                         <td>{{ fine.fine_date }}</td>
                         <td>{{ fine.reason }}</td>
                         <td>{{ fine.fine_amount }}</td>
-                        <td><a href="/fine/pay/{{ fine.id }}">Pay</a></td>
+                        <td><a href="/fine/{{ fine.fine_id }}/pay">Pay</a></td>
                     </tr>
                 {% endfor %}
             </table>

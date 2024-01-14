@@ -7,7 +7,7 @@ from flask import jsonify, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, login_required, current_user
 # from flask_restful import Resource, Api, reqparse
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
-
+# from json import dumps, loads
 
 mongo_uri = os.environ.get('MONGO_URI')
 mongo_client = MongoClient(mongo_uri)
@@ -89,7 +89,13 @@ def profile():
     # total_fine = 0
     # for fine in my_fines:
         # total_fine += fine['amount']
-    return render_template('profile.html', user=current_user, my_books=my_books, my_reservations=my_reservations, my_fines=my_fines)
+    return render_template(
+        'profile.html',
+        user=current_user,
+        my_books=list(my_books),
+        my_reservations=list(my_reservations),
+        my_fines=list(my_fines)
+    )
 
 @app.route('/')
 def index():
@@ -151,6 +157,75 @@ def book(isbn):
         return render_template('404.html', user=current_user)
     return render_template('book.html', data=book, user=current_user)
 
+@app.route('/reservation/<isbn>/cancel', methods=['GET'])
+@login_required
+def cancel_reservation(isbn):
+    book = database.books.find_one({"isbn": isbn})
+    if not book:
+        return render_template('404.html', user=current_user)
+    if book['status'] != 'reserved':
+        return render_template('404.html', user=current_user)
+
+    reservation_deadline = book['deadline'] # example value: "2023-03-23"
+    reservation_deadline = datetime.datetime.strptime(reservation_deadline, '%Y-%m-%d') # convert to datetime object
+    # if reservation deadline is passed then fine the user for 10 liras for each day
+    datetime_delta = reservation_deadline - datetime.datetime.now()
+
+    if datetime_delta.days < 0:
+        database.fines.insert_one({"username": current_user.username, "amount": -datetime_delta.days * 10})
+
+    database.books.update_one({"isbn": isbn}, {"$set": {"status": "available", "current_occupant_username": None}})
+    return redirect(url_for('profile'))
+
+@app.route('/book/<isbn>/reserve', methods=['GET'])
+@login_required
+def reserve_book(isbn):
+    book = database.books.find_one({"isbn": isbn})
+    if not book:
+        return render_template('404.html', user=current_user)
+    if book['status'] != 'available':
+        return render_template('404.html', user=current_user)
+    database.books.update_one({"isbn": isbn}, {"$set": {"status": "reserved", "current_occupant_username": current_user.username}})
+    return redirect(url_for('profile'))
+
+@app.route('/book/<isbn>/loan', methods=['GET'])
+@login_required
+def loan_book(isbn):
+    book = database.books.find_one({"isbn": isbn})
+    if not book:
+        return render_template('404.html', user=current_user)
+    if book['status'] != 'reserved':
+        return render_template('404.html', user=current_user)
+    database.books.update_one({"isbn": isbn}, {"$set": {"status": "loaned", "current_occupant_username": current_user.username}})
+    return redirect(url_for('profile'))
+
+@app.route('/book/<isbn>/return', methods=['GET'])
+@login_required
+def return_book(isbn):
+    book = database.books.find_one({"isbn": isbn})
+    if not book:
+        return render_template('404.html', user=current_user)
+    if book['status'] != 'loaned':
+        return render_template('404.html', user=current_user)
+    database.books.update_one({"isbn": isbn}, {"$set": {"status": "available", "current_occupant_username": None}})
+    return redirect(url_for('profile'))
+
+@app.route('/fine/<int:fine_id>/pay', methods=['GET'])
+@login_required
+def pay_fine(fine_id):
+    fine = database.fines.find_one({"fine_id": fine_id})
+    if not fine:
+        return render_template('404.html', user=current_user)
+    
+    if fine['fine_amount'] > current_user.current_balance:
+        return render_template('profile.html', user=current_user, error='Not enough money')
+
+    # delete fine
+    database.fines.delete_one({"fine_id": fine_id})
+    # deduct money from user
+    database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": -fine['fine_amount']}})
+
+    return redirect(url_for('profile'))
 
 
 # 404 page
