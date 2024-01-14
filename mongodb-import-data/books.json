@@ -11,8 +11,9 @@
     "author": "Elisabeth Robson, Eric Freeman",
 
     "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "current_occupant_username": "osman",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   },
   {
     "isbn": "978-1449369279",
@@ -25,9 +26,10 @@
     "publisher": "O'Reilly",
     "author": "Andrew Lombardi",
 
-    "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "status": "loaned",
+    "current_occupant_username": "osman",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   },
   {
     "isbn": "1783987987",
@@ -40,9 +42,10 @@
     "publisher": "Packt",
     "author": "Simon Timms",
 
-    "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "status": "loaned",
+    "current_occupant_username": "osman",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   },
   {
     "isbn": "1449325947",
@@ -56,8 +59,9 @@
     "author": "Stoyan Stefanov",
 
     "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "current_occupant_username": "esray",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   },
   {
     "isbn": "0596806752",
@@ -70,9 +74,10 @@
     "publisher": "O'Reilly",
     "author": "Stoyan Stefanov",
 
-    "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "status": "loaned",
+    "current_occupant_username": "mehmet",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   },
   {
     "isbn": "978-0441172719",
@@ -85,9 +90,11 @@
     "publisher": "Ace",
     "author": "Frank Herbert",
 
-    "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "status": "loaned",
+    "current_occupant_username": "ahmet",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
+
   },
   {
     "isbn": "1430263881",
@@ -100,9 +107,10 @@
     "publisher": "O'Reilly",
     "author": "Adam Freeman",
 
-    "status": "reserved",
-    "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "status": "loaned",
+    "current_occupant_username": "osman",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
 
   },
   {
@@ -118,7 +126,8 @@
 
     "status": "in_shelf",
     "current_occupant_username": "none",
-    "last_update_date": "2017-01-01"
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   },
   {
     "isbn": "978-0345391803",
@@ -132,7 +141,8 @@
     "author": "Douglas Adams",
 
     "status": "borrowed",
-    "current_occupant_username": "user1",
-    "last_update_date": "2017-01-01"
+    "current_occupant_username": "esray",
+    "last_update_date": "2017-01-01",
+    "deadline": "2024-01-26"
   }
 ]

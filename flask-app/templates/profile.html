@@ -16,12 +16,13 @@
 
     <div class="page-content" >
 
-        Welcome, {{ user.name }}!
-    
-        To log out, click <a href="/logout">here</a>.
-    
-        Current balance: {{ user.current_balance }}
+        <p>Welcome, {{ user.name }}!</p>
         <br>
+    
+        <p>Current balance: {{ user.current_balance }}</p>
+
+        <p>To deposit money into this account: <a href="/deposit_money">click here</a>.</p>
+        <p>To withdraw money from this account: <a href="/withdraw_money">click here</a>.</p>
     
         {% if user.user_type == 'student' %}
             <p>Student</p>
@@ -32,12 +33,77 @@
         {% endif %}
     
     
-        My reservations:
+        <h2>My reservations</h2>
+        {% if my_reservations %}
+            <table>
+                <tr>
+                    <th>Book</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Cancel</th>
+                </tr>
+                {% for reservation in my_reservations %}
+                    <tr>
+                        <td><a href="/book/{{ reservation.isbn }}">{{ reservation.title }}</a></td>
+                        <td>{{ reservation.last_update_date }}</td>
+                        <td>{{ reservation.deadline }}</td>
+                        <td><a href="/reservation/cancel/{{ reservation.id }}">Cancel</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have no reservations.</p>
+        {% endif %}
+
+
+        <h2>My loaned books</h2>
+        {% if my_books %}
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Return</th>
+                </tr>
+                {% for book in my_books %}
+                    <tr>
+                        <td><a href="/book/{{ book.isbn }}">{{ book.title }}</a></td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td><a href="/return/{{ book.id }}">Return</a></td>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have no books.</p>
+        {% endif %}
+
         <br>
-        {% for reservation in my_reservations %}
-            {{ reservation.reservation_id }}: {{ reservation.reservation_date }}
-        <br>
-        {% endfor %}
+
+        <h2>My fines</h2>
+        {% if my_fines %}
+            <table>
+                <tr>
+                    <th>Fine date</th>
+                    <th>Reason</th>
+                    <th>Amount</th>
+                    <th>Pay</th>
+                </tr>
+                {% for fine in my_fines %}
+                    <tr>
+                        <td>{{ fine.fine_date }}</td>
+                        <td>{{ fine.reason }}</td>
+                        <td>{{ fine.fine_amount }}</td>
+                        <td><a href="/fine/pay/{{ fine.id }}">Pay</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have no fines.</p>
+        {% endif %}
+
         To delete your account, click <a href="/delete">here</a>.
 
     </div>

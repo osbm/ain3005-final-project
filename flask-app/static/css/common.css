@@ -57,6 +57,16 @@ input[type=date] {
     font: 1em sans-serif;
 }
 
+input[type=number] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font: 1em sans-serif;
+}
+
 input[type=email] {
     width: 100%;
     padding: 12px 20px;
@@ -195,5 +205,19 @@ p[name="error"] {
     /* center */
     overflow: hidden;
     /* fill with smoother green */
+    
+}
+
+/* table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
     
 }

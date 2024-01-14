@@ -7,12 +7,12 @@
         "birthday": "01.01.2001",
         "email": "admin@admin.com",
         "user_type": "admin",
-        "current_balance": 100000
+        "current_balance": 120000
     },
     {
         "name": "Osman Faruk",
         "surname": "Kaya",
-        "username": "osmanfarukkaya",
+        "username": "osman",
         "password": "123456",
         "birthday": "06.02.2001",
         "email": "osmanfaruk.kaya@university.edu",
@@ -23,7 +23,7 @@
     {
         "name": "Esra",
         "surname": "Yilmaz",
-        "username": "esraylmz",
+        "username": "esray",
         "password": "123456",
         "birthday": "03.02.2001",
         "email": "esra.yilmaz@email-provider.com",
@@ -43,7 +43,7 @@
     {
         "name": "Mehmet",
         "surname": "Yilmaz",
-        "username": "mehmetyilmaz",
+        "username": "mehmet",
         "password": "123456",
         "birthday": "07.04.1941",
         "email": "mehmet.yilmaz@hotmail.com",
@@ -53,7 +53,7 @@
     {
         "name": "Ahmet",
         "surname": "Yilmaz",
-        "username": "ahmetyilmaz",
+        "username": "ahmet",
         "password": "123456",
         "birthday": "07.04.1941",
         "email": "ahmet@email.com",

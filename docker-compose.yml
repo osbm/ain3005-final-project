@@ -24,7 +24,6 @@ services:
     restart: always
     ports:
       - 8000:5000
-
     depends_on:
       - mongodb-database
     environment:

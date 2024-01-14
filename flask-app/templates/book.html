@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book</title>
+    <title>{{ data.title}}</title>
     <!-- assets/css/common.css -->
-    <link rel="stylesheet" href="./static/css/common.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css')}}">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
 </head>
 <body>
 
     <div class="navbar">
         <a href="/" style="float: left;">Home</a>
-        {% if user %}
+        {% if user.is_authenticated %}
+            <a href="/profile">Profile</a>
             <a href="/logout">Logout</a>
-            <a href="/user">User page</a>
         {% else %}
             <a href="/login">Login</a>
             <a href="/signup">Sign up</a>
@@ -22,13 +22,37 @@
     </div>
 
     <div class="page-content">
-        <h2 class="text-center">Book</h2>
-        <p>Book title: {{ book.title }}</p>
-        <p>Book author: {{ book.author }}</p>
-        <p>Book ISBN: {{ book.isbn }}</p>
-        <p>Book genre: {{ book.genre }}</p>
-        <p>Book year: {{ book.year }}</p>
+        <h2 class="text-center">Book information page</h2>
         
+        <table>
+            <tr>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Book status</th>
+                {% if data.status != 'in_shelf' %}
+                    <th>Occupied by</th>
+                    <th>Deadline</th>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>{{ data.isbn }}</td>
+                <td>{{ data.title }}</td>
+                <td>{{ data.author }}</td>
+                <td>{{ data.category }}</td>
+                <td>{{ data.price }}</td>
+                <td>{{ data.status }}</td>
+                {% if data.status != 'in_shelf' %}
+                    <td><a href="/user/{{ data.current_occupant_username }}">{{ data.current_occupant_username }}</a></td>
+                    <td>{{ data.deadline }}</td>
+                {% endif %}
+
+            </tr>
+        </table>
+
+
         {% if user %}
             {% if user.user_type == 'admin' %}
                 <div class="admin-actions">

@@ -40,7 +40,6 @@ class User(UserMixin):
     def is_active(self):
         return self.active
 
-    
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -84,10 +83,12 @@ def signup():
 @login_required
 def profile():
 
-    my_books = database.books.find({"owner": current_user.username})
-    my_reservations = database.reservations.find({"user": current_user.username})
-    my_fines = database.fines.find({"user": current_user.username})
-
+    my_books = database.books.find({"current_occupant_username": current_user.username, "status": "loaned"})
+    my_reservations = database.books.find({"current_occupant_username": current_user.username, "status": "reserved"})
+    my_fines = database.fines.find({"username": current_user.username})
+    # total_fine = 0
+    # for fine in my_fines:
+        # total_fine += fine['amount']
     return render_template('profile.html', user=current_user, my_books=my_books, my_reservations=my_reservations, my_fines=my_fines)
 
 @app.route('/')
@@ -108,6 +109,34 @@ def search():
     return render_template('search.html')
 
 
+@app.route('/deposit_money', methods=['GET', 'POST'])
+@login_required
+def deposit_money():
+    if request.method == 'POST':
+        amount = int(request.form['amount'])
+        database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": amount}})
+        return redirect(url_for('profile'))
+    return render_template('deposit_money.html', user=current_user)
+
+
+@app.route('/withdraw_money', methods=['GET', 'POST'])
+@login_required
+def withdraw_money():
+    if request.method == 'POST':
+        amount = int(request.form['amount'])
+
+        if amount < 0:
+            return render_template('withdraw_money.html', user=current_user, error='Invalid amount')
+
+        if amount > current_user.current_balance:
+            return render_template('withdraw_money.html', user=current_user, error='Not enough money')
+
+        
+        database.users.update_one({"username": current_user.username}, {"$inc": {"current_balance": -amount}})
+        return redirect(url_for('profile'))
+    return render_template('withdraw_money.html', user=current_user)
+
+
 @app.route('/user/<username>', methods=['GET'])
 def user(username):
     user = database.users.find_one({"username": username})
@@ -115,23 +144,19 @@ def user(username):
         return render_template('404.html', user=current_user)
     return render_template('user.html', data=user, user=current_user)
 
-@app.route('/book/<book_id>', methods=['GET'])
-def book(book_id):
-    book = database.books.find_one({"_id": book_id})
+@app.route('/book/<isbn>', methods=['GET'])
+def book(isbn):
+    book = database.books.find_one({"isbn": isbn})
     if not book:
-        return render_template('404.html')
-    return render_template('book.html', book=book)
+        return render_template('404.html', user=current_user)
+    return render_template('book.html', data=book, user=current_user)
+
 
 
 # 404 page
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', user=current_user), 404
-
-
-
-
-
 
 
 if __name__ == '__main__':

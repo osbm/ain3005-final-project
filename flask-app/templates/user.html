@@ -3,22 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ data.name }} {{ data.surname }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
 </head>
 <body>
     <div class="navbar">
         <a href="/" style="float: left;">Home</a>
-        <a href="/login">Login</a>
-        <a href="/signup">Sign up</a>
+        {% if user.is_authenticated %}
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Sign up</a>
+        {% endif %}
     </div>
 
     <div class="page-content">
         <h2 class="text-center">User page</h2>
-        <p>Username: {{ data.username }}</p>
-        <p>Email: {{ data.email }}</p>
-        <p>User type: {{ data.user_type }}</p>
+        
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>User type</th>
+                {% if user.user_type == 'admin' %}
+                    <th>Balance</th>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>{{ data.username }}</td>
+                <td>{{ data.name }}</td>
+                <td>{{ data.surname }}</td>
+                <td>{{ data.email }}</td>
+                <td>{{ data.user_type }}</td>
+                {% if user.user_type == 'admin' %}
+                    <td>{{ data.balance }}</td>
+                {% endif %}
+            </tr>
+
 
         {% if user.user_type == 'admin' %}
             <div class="admin-actions">

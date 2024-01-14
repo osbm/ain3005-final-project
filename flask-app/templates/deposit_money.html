@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/common.css')}}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <title>Deposit money</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="page-content">
+        <h2 class="text-center">Deposit Money</h2>
+        <form action="/deposit_money" method="POST">
+            <label for="amount">Amount</label>
+            <input type="number" name="amount" id="amount" placeholder="Enter amount" required>
+            <br>
+            <label for="card_number">Card Number</label>
+            <p style="font-size: small;">please do not enter actual card info this is a proof of concept database updater</p>
+            <input type="text" name="card_number" id="card_number" placeholder="Enter card number" required>
+            <br>
+            <input type="submit" value="Deposit">
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
