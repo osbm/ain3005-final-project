@@ -4,43 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <!-- assets/css/common.css -->
+    <link rel="stylesheet" href="./static/css/common.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
 </head>
 <body>
-    <h2>Sign Up</h2>
-    <form action="/signup" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" name="name" required>
-        <br>
-        <label for="surname">Surname:</label>
-        <input type="text" name="surname" required>
-        <br>
-        <label for="username">Username:</label>
-        <input type="text" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <br>
-        <label for="email">Email:</label>
-        <input type="email" name="email" required>
-        <br>
-        <label for="birthday">Birthday:</label>
-        <input type="date" name="birthday" required>
-        <br>
-        <label for="user_type">User Type:</label>
-        <select name="user_type" id="user_type">
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
-        </select>
-        <button type="submit">Sign Up</button>
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        <a href="/login">Login</a>
+        <a href="/signup" class="active">Sign Up</a>
+    </div>
 
-    </form>
+    <div class="page-content">
+            
+        <h1 class="text-center">Sign Up</h2>
+        <form action="/signup" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" name="name" required>
+            <br>
+            <label for="surname">Surname:</label>
+            <input type="text" name="surname" required>
+            <br>
+            <label for="username">Username:</label>
+            <input type="text" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+            <br>
+            <label for="birthday">Birthday:</label>
+            <input type="date" name="birthday" required>
+            <br>
+            <label for="user_type">User Type:</label>
+            
+            <select name="user_type" id="user_type" required>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select>
+            <button type="submit">Sign Up</button>
+        </form>
 
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
+        {% if message %}
+            <p name="message">{{ message }}</p>
+        {% endif %}
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+        {% if error %}
+            <p name="error">{{ error }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>

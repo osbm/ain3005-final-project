@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        <a href="/login">Login</a>
+        <a href="/signup">Sign up</a>
+    </div>
+
+    <div class="page-content">
+        <h2 class="text-center">User page</h2>
+        <p>Username: {{ data.username }}</p>
+        <p>Email: {{ data.email }}</p>
+        <p>User type: {{ data.user_type }}</p>
+
+        {% if user.user_type == 'admin' %}
+            <div class="admin-actions">
+                <h2>Admin actions</h2>
+                
+                <!-- buttons side by side -->
+                <div class="admin-actions-buttons">
+                    <form action="/user/delete" method="POST">
+                        <button type="submit">Delete this user</button>
+                    </form>
+                    
+                </div>
+
+            </div>
+        {% endif %}
+        
+    </div>
+
+</body>
+</html>

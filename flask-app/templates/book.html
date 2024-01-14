@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book</title>
+    <!-- assets/css/common.css -->
+    <link rel="stylesheet" href="./static/css/common.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+</head>
+<body>
+
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        {% if user %}
+            <a href="/logout">Logout</a>
+            <a href="/user">User page</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Sign up</a>
+        {% endif %}
+    </div>
+
+    <div class="page-content">
+        <h2 class="text-center">Book</h2>
+        <p>Book title: {{ book.title }}</p>
+        <p>Book author: {{ book.author }}</p>
+        <p>Book ISBN: {{ book.isbn }}</p>
+        <p>Book genre: {{ book.genre }}</p>
+        <p>Book year: {{ book.year }}</p>
+        
+        {% if user %}
+            {% if user.user_type == 'admin' %}
+                <div class="admin-actions">
+                    <h2>Admin actions</h2>
+                    
+                    <!-- buttons side by side -->
+                    <div class="admin-actions-buttons">
+                        <form action="/book/delete" method="POST">
+                            <button type="submit">Delete this book</button>
+                        </form>
+                        
+                        <form action="/book/edit" method="GET">
+                            <button type="submit">Edit this book</button>
+                        </form>
+                    </div>
+
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

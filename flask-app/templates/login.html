@@ -4,25 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="static/css/common.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+
 </head>
 <body>
-    <h2>Login</h2>
-    <form action="/login" method="post">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    </form>
-    <p>Don't have a Library account? <a href="/signup">Sign up</a>!</p>
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        <a href="/login" class="active">Login</a>
+        <a href="/signup">Sign up</a>
+    </div>
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+    <div class="page-content">
+        <h1 class="text-center">Login</h2>
+        <form action="/login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+            <br>
+            <button type="submit">Login</button>
+            <p>Don't have a Library account? <a href="/signup">Sign up</a>!</p>
+        </form>
+        {% if message %}
+            <p name="message">{{ message }}</p>
+        {% endif %}
+
+        {% if error %}
+            <p name="error">{{ error }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>

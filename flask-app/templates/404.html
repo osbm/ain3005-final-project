@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/common.css')}}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <title>Document</title>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" style="float: left;">Home</a>
+        {% if user %}
+            {% if user.is_authenticated %}
+                <a href="/logout">Logout</a>
+                <a href="/user">User page</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/signup">Sign up</a>
+            {% endif %}    
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/signup">Sign up</a>
+        {% endif %}
+        
+    </div>
+
+    <p>You have reached a page that does not exist. Please go back to the <a href="/">home page</a>.</p>
+
+
+</body>
+</html>

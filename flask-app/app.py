@@ -30,12 +30,9 @@ class User(UserMixin):
         self.birthdate = birthdate
         self.user_type = user_type
         self.current_balance = current_balance
-
         self.username = username
         self.password = password
         self.active = active
-
-
 
     def is_authenticated(self):
         return True
@@ -60,7 +57,7 @@ def login():
         if user and request.form['password'] == user['password']:
             user_obj = User(**user)
             login_user(user_obj)
-            return redirect(url_for('protected'))
+            return redirect(url_for('profile'))
         return render_template('login.html', error='Invalid username or password')
     return render_template('login.html')
 
@@ -83,14 +80,59 @@ def signup():
     return render_template('signup.html')
 
 
-@app.route('/protected', methods=['GET'])
+@app.route('/profile', methods=['GET'])
 @login_required
-def protected():
-    return render_template('protected.html', user=current_user)
+def profile():
+
+    my_books = database.books.find({"owner": current_user.username})
+    my_reservations = database.reservations.find({"user": current_user.username})
+    my_fines = database.fines.find({"user": current_user.username})
+
+    return render_template('profile.html', user=current_user, my_books=my_books, my_reservations=my_reservations, my_fines=my_fines)
 
 @app.route('/')
 def index():
     return render_template('index.html', user=current_user)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        
+        # log from keys 
+        app.logger.info(request.form.keys())
+        
+        query = request.form['query']
+        results = database.users.find({"$text": {"$search": query}})
+        return render_template('search.html', search_results=results)
+    return render_template('search.html')
+
+
+@app.route('/user/<username>', methods=['GET'])
+def user(username):
+    user = database.users.find_one({"username": username})
+    if not user:
+        return render_template('404.html', user=current_user)
+    return render_template('user.html', data=user, user=current_user)
+
+@app.route('/book/<book_id>', methods=['GET'])
+def book(book_id):
+    book = database.books.find_one({"_id": book_id})
+    if not book:
+        return render_template('404.html')
+    return render_template('book.html', book=book)
+
+
+# 404 page
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', user=current_user), 404
+
+
+
+
+
+
 
 if __name__ == '__main__':
     login_manager.init_app(app)
